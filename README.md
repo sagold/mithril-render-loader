@@ -1,6 +1,6 @@
 # mithril-render-loader
 
-> First shot at a webpack loader for (simple) mithril views to be rendered as html
+> First shot at a [webpack-Loader](https://webpack.js.org/) to render a [mithril](https://mithril.js.org/) [component](https://mithril.js.org/components.html) to html
 
 **install** `npm install mithril-render-loader`
 
