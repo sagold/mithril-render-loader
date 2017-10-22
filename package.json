@@ -11,10 +11,8 @@
   "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
   "license": "ISC",
   "dependencies": {
-    "install": "^0.10.1",
     "mithril": "^1.1.5",
     "mithril-node-render": "^2.2.0",
-    "npm": "^5.5.1",
     "require-hook": "^0.1.2",
     "vm2": "^3.5.2"
   },
