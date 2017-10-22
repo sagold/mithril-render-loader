@@ -43,7 +43,11 @@ function mithrilRenderLoader(view) {
     });
 
     // run the contents in nodejs, hooking into require
-    view = vm.run(`${requireHook}${view}${requireExport}`, this.resource);
+    try {
+        view = vm.run(`${requireHook}${view}${requireExport}`, this.resource);
+    } catch (e) {
+        return done(e);
+    }
 
     dependencies.forEach((filepath) => {
         // watch file dependencies
@@ -58,7 +62,8 @@ function mithrilRenderLoader(view) {
     render(m(view, model)).then((html) => {
         console.log("RESULT", html);
         done(null, `module.exports = ${JSON.stringify(html)}`);
-    });
+    })
+    .catch(done);
 }
 
 
