@@ -1,0 +1,28 @@
+{
+  "name": "mithril-render-loader",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf build; webpack",
+    "serve": "webpack-dev-server"
+  },
+  "keywords": [],
+  "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
+  "license": "ISC",
+  "dependencies": {
+    "install": "^0.10.1",
+    "mithril": "^1.1.5",
+    "mithril-node-render": "^2.2.0",
+    "npm": "^5.5.1",
+    "require-hook": "^0.1.2",
+    "vm2": "^3.5.2"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "extract-loader": "^1.0.1",
+    "file-loader": "^1.1.5",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.3"
+  }
+}
