@@ -43,6 +43,15 @@ The webpack-config might look something along theese lines:
                         loader: "extract-loader"
                     },
                     {
+                        loader: "html-loader",
+                        options: {
+                            minimize: false, // deactivate minimize. It destroys valid inline css syntax
+                            interpolate: false,
+                            minifyCSS: false, // bugged
+                            root: __dirname,
+                        }
+                    },
+                    {
                         loader: "mithril-render-loader",
                         options: {
                             model: {
