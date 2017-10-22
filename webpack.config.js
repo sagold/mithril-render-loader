@@ -43,6 +43,9 @@ const webpackConfig = {
                         loader: "extract-loader"
                     },
                     {
+                        loader: "html-loader"
+                    },
+                    {
                         loader: path.join(__dirname, "index.js"),
                         options: {
                             model: {

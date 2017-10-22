@@ -1,6 +1,6 @@
 {
   "name": "mithril-render-loader",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,8 @@
   "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.2.0",
+    "html-loader": "^0.5.1",
     "mithril": "^1.1.5",
     "mithril-node-render": "^2.2.0",
     "require-hook": "^0.1.2",
