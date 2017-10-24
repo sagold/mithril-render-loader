@@ -11,6 +11,9 @@ function logTime(message, startTime, endTime) {
 
 
 function mithrilRenderLoader(view) {
+    // prevents some(!) messed up states - the loader is currently fast enough enough
+    this.cacheable(false);
+
     const timeStart = Date.now();
     // the render-mithril operation is async
     var done = this.async();
@@ -20,6 +23,15 @@ function mithrilRenderLoader(view) {
         model: null, // data passed to component
         "export": false // use module.exports or return result as string (html-loader)
     }, this.query);
+
+    if (o.model === null) {
+        this.emitWarning("property 'model' is not for mithril-render");
+        o.model = {};
+    }
+
+    // pass a uid to mithril component
+    o.model.ID = `${this.resourcePath}${Date.now()}${Math.random()}`;
+    o.model.COMPONENT_ID = this.resourcePath;
 
     // prototype - webpack require
     const requests = [];
@@ -53,7 +65,7 @@ function mithrilRenderLoader(view) {
     render(m(view, o.model))
         .then((html) => {
             timeResolve = Date.now();
-            o.profile && logTime(`render ${this.resource}`, timeStart, timeResolve);
+            o.profile && logTime(`render component ${this.resource}`, timeStart, timeResolve);
             global.resolve = undefined;
 
             const dependencies = [];
@@ -71,13 +83,15 @@ function mithrilRenderLoader(view) {
                 delete require.cache[filepath];
             });
 
+            // tryout
+            this.addDependency(this.resourcePath);
 
             return html;
         })
         .then((html) => Promise
             .all(requests)
             .then((results) => {
-                o.profile && logTime(`resolve ${this.resource}`, timeResolve, Date.now());
+                o.profile && logTime(`resolve webpack requires ${this.resource}`, timeResolve, Date.now());
 
                 results.forEach((data) => {
                     html = html.replace(data.id, data.source);
