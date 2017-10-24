@@ -53,7 +53,7 @@ function mithrilRenderLoader(view) {
     render(m(view, o.model))
         .then((html) => {
             timeResolve = Date.now();
-            o.profile && logTime(`render ${this.resource}`, timeStart, timeResolve);
+            o.profile && logTime(`render component ${this.resource}`, timeStart, timeResolve);
             global.resolve = undefined;
 
             const dependencies = [];
@@ -71,13 +71,15 @@ function mithrilRenderLoader(view) {
                 delete require.cache[filepath];
             });
 
+            // tryout
+            this.addDependency(this.resourcePath);
 
             return html;
         })
         .then((html) => Promise
             .all(requests)
             .then((results) => {
-                o.profile && logTime(`resolve ${this.resource}`, timeResolve, Date.now());
+                o.profile && logTime(`resolve webpack requires ${this.resource}`, timeResolve, Date.now());
 
                 results.forEach((data) => {
                     html = html.replace(data.id, data.source);
