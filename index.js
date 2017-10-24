@@ -11,6 +11,9 @@ function logTime(message, startTime, endTime) {
 
 
 function mithrilRenderLoader(view) {
+    // prevents some(!) messed up states - the loader is currently fast enough enough
+    this.cacheable(false);
+
     const timeStart = Date.now();
     // the render-mithril operation is async
     var done = this.async();
@@ -20,6 +23,15 @@ function mithrilRenderLoader(view) {
         model: null, // data passed to component
         "export": false // use module.exports or return result as string (html-loader)
     }, this.query);
+
+    if (o.model === null) {
+        this.emitWarning("property 'model' is not for mithril-render");
+        o.model = {};
+    }
+
+    // pass a uid to mithril component
+    o.model.ID = `${this.resourcePath}${Date.now()}${Math.random()}`;
+    o.model.COMPONENT_ID = this.resourcePath;
 
     // prototype - webpack require
     const requests = [];
