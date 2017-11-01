@@ -1,6 +1,6 @@
 {
   "name": "mithril-render-loader",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,9 @@
     "chalk": "^2.2.0",
     "mithril": "^1.1.5",
     "mithril-node-render": "^2.2.0"
+  },
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org"
   },
   "devDependencies": {
     "eslint": "^3.19.0",

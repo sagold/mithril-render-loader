@@ -12,7 +12,6 @@ function logTime(message, startTime, endTime) {
 
 function mithrilRenderLoader(view) {
     // prevents some(!) messed up states - the loader is currently fast enough enough
-    this.cacheable(false);
 
     const timeStart = Date.now();
     // the render-mithril operation is async
@@ -22,8 +21,9 @@ function mithrilRenderLoader(view) {
         profile: false, // log build times
         model: null, // data passed to component
         "export": false, // use module.exports or return result as string (html-loader)
+        cacheable: true, // deactivate cache, forcing a rebuild each time
         // mithril-render-node options @see https://github.com/MithrilJS/mithril-node-render#options
-        escapeAttributeValue: false, // either a boolean or a function (value) => value to parse attributes
+        escapeAttributes: false, // either a boolean or a function (value) => value to parse attributes
         escapeString: true, // A filter function for string nodes
         strict: false // true for xml/xhtml
     }, this.query);
@@ -31,6 +31,10 @@ function mithrilRenderLoader(view) {
     if (o.model === null) {
         this.emitWarning("property 'model' is not for mithril-render");
         o.model = {};
+    }
+
+    if (o.cacheable === false) {
+        this.cacheable(false);
     }
 
     // pass a uid to mithril component
@@ -73,10 +77,10 @@ function mithrilRenderLoader(view) {
 
     // gather renderer options
     const renderOptions = { strict: o.strict };
-    if (o.escapeAttributeValue === false) {
+    if (o.escapeAttributes === false) {
         renderOptions.escapeAttributeValue = (value) => value;
-    } else if (typeof o.escapeAttributeValue === "function") {
-        renderOptions.escapeAttributeValue = o.escapeAttributeValue;
+    } else if (typeof o.escapeAttributes === "function") {
+        renderOptions.escapeAttributeValue = o.escapeAttributes;
     }
     if (o.escapeString === false) {
         renderOptions.escapeString = (value) => value;
