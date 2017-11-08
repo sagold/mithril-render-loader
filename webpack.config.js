@@ -8,7 +8,8 @@ const webpackConfig = {
     devtool: USE_SOURCEMAPS ? "source-map" : false,
 
     entry: [
-        "./test/app/index.view.js"
+        "./test/app/index-one.view.js",
+        "./test/app/index-two.view.js"
     ],
 
     resolve: {
@@ -19,7 +20,7 @@ const webpackConfig = {
 
     output: {
         path: path.join(__dirname, "build"),
-        filename: "[name]-[chunkhash].js",
+        filename: "[name].js",
         chunkFilename: "[id].js",
         pathinfo: USE_SOURCEMAPS,
         hashFunction: "sha256",
@@ -30,7 +31,8 @@ const webpackConfig = {
         rules: [
             {
                 test: [
-                    path.join(__dirname, "test", "app", "index.view.js")
+                    path.join(__dirname, "test", "app", "index-one.view.js"),
+                    path.join(__dirname, "test", "app", "index-two.view.js")
                 ],
                 use: [
                     {
@@ -48,6 +50,7 @@ const webpackConfig = {
                     {
                         loader: path.join(__dirname, "index.js"),
                         options: {
+                            cacheable: false,
                             model: {
                                 title: "mithril-render-loader testpage",
                                 items: [

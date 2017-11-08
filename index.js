@@ -3,19 +3,27 @@ require("mithril/test-utils/browserMock")(global);
 const m = require("mithril");
 const chalk = require("chalk");
 const render = require("mithril-node-render");
+// const fs = require("fs");
+// const path = require("path");
 
 
 function logTime(message, startTime, endTime) {
     console.log(`${chalk.cyan("mithril-render-loader")} -- ${message}: ${chalk.blue((endTime - startTime) / 1000)}s`);
 }
 
+// this promise is used to ensure no multiple renderings are done in parallel (which may mess up component states)
+let whenFinishedRendering = Promise.resolve();
 
-function mithrilRenderLoader(view) {
-    // prevents some(!) messed up states - the loader is currently fast enough enough
 
+function mithrilRenderLoader() {
+    whenFinishedRendering = whenFinishedRendering
+        .then(renderView.bind(this, this.async()));
+}
+
+
+function renderView(done) {
+    // console.log("NODE RENDER MITHRIL", this.resourcePath);
     const timeStart = Date.now();
-    // the render-mithril operation is async
-    var done = this.async();
     // options
     const o = Object.assign({
         profile: false, // log build times
@@ -71,7 +79,8 @@ function mithrilRenderLoader(view) {
 
 
     const dependenciesBefore = Object.keys(require.cache);
-    view = require(this.resourcePath);
+    delete require.cache[this.resourcePath];
+    const view = require(this.resourcePath);
     let timeResolve;
 
 
@@ -89,7 +98,7 @@ function mithrilRenderLoader(view) {
     }
 
     // fetch the required data and render the component
-    render(m(view, o.model), renderOptions)
+    return render(m(view, Object.assign({ UID: this.resourcePath }, o.model), renderOptions))
         .then((html) => {
             timeResolve = Date.now();
             o.profile && logTime(`render component ${this.resource}`, timeStart, timeResolve);
@@ -119,11 +128,8 @@ function mithrilRenderLoader(view) {
             .all(requests)
             .then((results) => {
                 o.profile && logTime(`resolve webpack requires ${this.resource}`, timeResolve, Date.now());
-
                 results.forEach((data) => {
-
-                    console.log("insert", data.source);
-
+                    // console.log("insert", data.source);
                     html = html.replace(data.id, data.source);
                 });
                 return html;
@@ -131,6 +137,12 @@ function mithrilRenderLoader(view) {
         )
         .then((html) => {
             o.profile && logTime(`total time ${this.resource}`, timeStart, Date.now());
+
+            // console.log("WRITE FILE", `debug-${this.resourcePath.split("/").pop()}.html`);
+            // fs.writeFileSync(
+            //     path.join(process.cwd(), `debug-${this.resourcePath.split("/").pop()}.html`),
+            //     html
+            // );
 
             if (o.export) { // if no html loader
                 return done(null, `module.exports = ${JSON.stringify(html)}`);
