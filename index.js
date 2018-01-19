@@ -80,9 +80,15 @@ function renderView(done) {
 
     const dependenciesBefore = Object.keys(require.cache);
     delete require.cache[this.resourcePath];
-    const view = require(this.resourcePath);
+    let view;
     let timeResolve;
-
+    // require the entry file, catching nodejs syntax errors
+    try {
+        view = require(this.resourcePath);
+    } catch (e) {
+        // abort, passing error message to webpack
+        return done(e);
+    }
 
     // gather renderer options
     const renderOptions = { strict: o.strict };
