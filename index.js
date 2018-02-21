@@ -37,7 +37,7 @@ function renderView(done) {
     }, this.query);
 
     if (o.model === null) {
-        this.emitWarning("property 'model' is not for mithril-render");
+        this.emitWarning("property 'model' is not set for mithril-render");
         o.model = {};
     }
 
@@ -60,12 +60,14 @@ function renderView(done) {
                     console.log("ERROR", err.message);
                     return reject(err);
                 }
+
                 // module.exports = __webpack_public_path__ + "intro-mobile-f825065fb480b357.jpg";
                 source = source.replace(/^module\.exports[^"]*/, "");
                 if (/^".*"$/.test(source)) {
                     source.replace(/(^"|"$)/g, "");
                 }
-                console.log("RESOLVED", source);
+
+                // console.log("RESOLVED", source);
                 return resolve({ id, source });
             });
         });
@@ -86,7 +88,9 @@ function renderView(done) {
     try {
         view = require(this.resourcePath);
     } catch (e) {
-        // abort, passing error message to webpack
+        // abort, passing error message to webpack);
+        this.addDependency(this.resourcePath);
+        delete require.cache[this.resourcePath];
         return done(e);
     }
 
